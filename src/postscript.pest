@@ -1,0 +1,15 @@
+// from PostScript Language Reference, 3rd edition
+WHITESPACE = _{ "\u{00}" | "\u{09}" | "\u{0A}" | 
+"\u{0C}" | "\u{0D}" | "\u{20}" }
+special = { "(" | ")" | "<" | ">" | "[" | "]" | "{" | "}" | "/" | "%" }
+end_token = { WHITESPACE+ | EOI }
+comment = { "%" ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
+// note that 30A is a name, while 30 A is an int followed by a name
+int = ${ ("+" | "-" | "") ~ ASCII_DIGIT+ }
+int_token = {int ~ end_token}
+name = ${!int_token ~ (!special ~ !WHITESPACE ~ ANY)+}
+literal_name = {"/" ~ name? }
+imm_name = {"//" ~ name?}
+
+token = ${ (imm_name | literal_name | name | int) ~ end_token }
+file = { (token)* ~ EOI }
