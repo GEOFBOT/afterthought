@@ -1,0 +1,35 @@
+use std::str::FromStr;
+
+grammar;
+
+match {
+    "(",
+    ")",
+    "<",
+    ">",
+    "[",
+    "]",
+    "{",
+    "}",
+    r"//[^\(\)<>\[\]\{\}/\s]*" => IMM_NAME,
+    r"/[^\(\)<>\[\]\{\}/\s]*" => LITERAL_NAME,
+    r"(\+|-)?[0-9]+" => INT
+} else {
+    r"[^\s]+" => NAME
+}
+
+pub IntToken: i32 = {
+    INT => i32::from_str(<>).unwrap(),
+};
+
+pub NameToken: String = {
+    NAME => String::from(<>).unwrap(),
+};
+
+pub ImmNameToken: String = {
+    IMM_NAME => String::from(<>).unwrap(),
+};
+
+pub LiteralNameToken: String = {
+    LITERAL_NAME => String::from(<>).unwrap(),
+};
