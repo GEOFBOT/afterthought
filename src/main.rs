@@ -29,3 +29,8 @@ fn test_token_terminals() {
     // blank literal name is valid
     assert!(postscript::LiteralNameTokenParser::new().parse("/").is_ok());
 }
+
+#[test]
+fn test_many_tokens() {
+    assert!(postscript::ProgramParser::new().parse("10 13 add").is_ok())
+}

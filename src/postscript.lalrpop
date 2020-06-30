@@ -42,7 +42,7 @@ Token: AstToken = {
     LiteralNameToken,
 }
 
-Program: Program = {
+pub Program: Program = {
     <t:Token> <p:Program> => Program::Concat(t, Box::new(p)),
     Token => Program::Concat(<>, Box::new(Program::End))
 }
