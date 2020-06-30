@@ -21,15 +21,14 @@ match {
 pub IntToken: i32 = {
     INT => i32::from_str(<>).unwrap(),
 };
-
 pub NameToken: String = {
-    NAME => String::from(<>).unwrap(),
-};
-
+    NAME => String::from(<>),
+}
+;
 pub ImmNameToken: String = {
-    IMM_NAME => String::from(<>).unwrap(),
+    IMM_NAME => String::from(<>),
 };
 
 pub LiteralNameToken: String = {
-    LITERAL_NAME => String::from(<>).unwrap(),
+    LITERAL_NAME => String::from(<>),
 };
