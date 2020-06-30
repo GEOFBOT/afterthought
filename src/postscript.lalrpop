@@ -1,4 +1,6 @@
 use std::str::FromStr;
+use crate::ast::Token as AstToken;
+use crate::ast::Program;
 
 grammar;
 
@@ -18,17 +20,29 @@ match {
     r"[^\s]+" => NAME
 }
 
-pub IntToken: i32 = {
-    INT => i32::from_str(<>).unwrap(),
+pub IntToken: AstToken = {
+    INT => AstToken::Int(i32::from_str(<>).unwrap()),
 };
-pub NameToken: String = {
-    NAME => String::from(<>),
+pub NameToken: AstToken = {
+    NAME => AstToken::Name(String::from(<>)),
 }
 ;
-pub ImmNameToken: String = {
-    IMM_NAME => String::from(<>),
+pub ImmNameToken: AstToken = {
+    IMM_NAME => AstToken::ImmName(String::from(<>)),
 };
 
-pub LiteralNameToken: String = {
-    LITERAL_NAME => String::from(<>),
+pub LiteralNameToken: AstToken = {
+    LITERAL_NAME => AstToken::LiteralName(String::from(<>)),
 };
+
+Token: AstToken = {
+    IntToken,
+    NameToken,
+    ImmNameToken,
+    LiteralNameToken,
+}
+
+Program: Program = {
+    <t:Token> <p:Program> => Program::Concat(t, Box::new(p)),
+    Token => Program::Concat(<>, Box::new(Program::End))
+}
