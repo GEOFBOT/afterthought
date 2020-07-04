@@ -6,11 +6,19 @@ pub mod ast;
 use ast::{Program, Token};
 lalrpop_mod!(pub postscript);
 
+#[derive(PartialEq)]
+enum StackItem {
+    Int(i32),
+    Real(f64),
+    LiteralName(String),
+    StringLiteral(String),
+}
+
 fn main() {}
 
-fn execute(p: Program) -> Option<i32> {
+fn execute(p: Program) -> Option<StackItem> {
     let mut cur = &p;
-    let mut operand_stack = Vec::<i32>::new();
+    let mut operand_stack = Vec::<StackItem>::new();
     loop {
         match cur {
             Program::End => {
@@ -19,13 +27,20 @@ fn execute(p: Program) -> Option<i32> {
             Program::Concat(t, b) => {
                 match t {
                     Token::Int(i) => {
-                        operand_stack.push(*i);
+                        operand_stack.push(StackItem::Int(*i));
                     }
                     Token::Name(n) => match n.as_str() {
                         "add" => {
                             let a = operand_stack.pop().unwrap();
                             let b = operand_stack.pop().unwrap();
-                            operand_stack.push(a + b);
+                            match (a, b) {
+                                (StackItem::Int(a), StackItem::Int(b)) => {
+                                    operand_stack.push(StackItem::Int(a + b));
+                                }
+                                _ => {
+                                    panic!("type error");
+                                }
+                            }
                         }
                         _ => {
                             unimplemented!();
@@ -73,12 +88,12 @@ fn test_many_tokens() {
 }
 
 #[test]
-fn test_basic() {
+fn test_add() {
     let p = postscript::ProgramParser::new().parse("10 11 add").unwrap();
-    assert!(execute(p) == Some(10 + 11));
+    assert!(execute(p) == Some(StackItem::Int(10 + 11)));
 
     let p = postscript::ProgramParser::new()
         .parse("10 11 12 13 add add add")
         .unwrap();
-    assert!(execute(p) == Some(10 + 11 + 12 + 13));
+    assert!(execute(p) == Some(StackItem::Int(10 + 11 + 12 + 13)));
 }
