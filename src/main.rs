@@ -29,6 +29,9 @@ fn execute(p: Program) -> Option<StackItem> {
                     Token::Int(i) => {
                         operand_stack.push(StackItem::Int(*i));
                     }
+                    Token::StringLiteral(s) => {
+                        operand_stack.push(StackItem::StringLiteral(s.clone()));
+                    }
                     Token::Name(n) => match n.as_str() {
                         "add" => {
                             let a = operand_stack.pop().unwrap();
@@ -80,6 +83,13 @@ fn test_token_terminals() {
         .is_ok());
     // blank literal name is valid
     assert!(postscript::LiteralNameTokenParser::new().parse("/").is_ok());
+
+    assert!(postscript::StringLiteralTokenParser::new()
+        .parse("(test)")
+        .is_ok());
+    assert!(postscript::StringLiteralTokenParser::new()
+        .parse("(special characters *!&}^%)")
+        .is_ok());
 }
 
 #[test]

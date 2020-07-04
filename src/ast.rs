@@ -4,6 +4,7 @@ pub enum Token {
     LiteralName(String),
     ImmName(String),
     Name(String),
+    StringLiteral(String),
 }
 
 #[derive(Debug)]

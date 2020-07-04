@@ -5,6 +5,7 @@ use crate::ast::Program;
 grammar;
 
 match {
+    r"\([^\(\)]*\)" => STRING_LITERAL,
     "(",
     ")",
     "<",
@@ -35,11 +36,16 @@ pub LiteralNameToken: AstToken = {
     LITERAL_NAME => AstToken::LiteralName(String::from(<>)),
 };
 
+pub StringLiteralToken: AstToken = {
+    STRING_LITERAL => AstToken::StringLiteral(String::from(<>)),
+};
+
 Token: AstToken = {
     IntToken,
     NameToken,
     ImmNameToken,
     LiteralNameToken,
+    StringLiteralToken,
 }
 
 pub Program: Program = {
