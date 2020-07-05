@@ -1,7 +1,11 @@
 #[macro_use]
 extern crate lalrpop_util;
 
+#[macro_use]
+extern crate nom;
+
 pub mod ast;
+pub mod lexer;
 
 use ast::{Program, Token};
 lalrpop_mod!(pub postscript);
